@@ -1,0 +1,142 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=BIG5">
+<title>Merchandise Information</title>
+
+<script
+	src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular.min.js"></script>
+<script src="https://code.angularjs.org/1.2.26/angular-route.min.js"></script>
+<!-- jQuery -->
+<script src="./bootstrap/bower_components/jquery/dist/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="./bootstrap/js/bootstrap.min.js"></script>
+<!-- Bootstrap Core CSS -->
+<link href="./bootstrap/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+	<div ng-app="" ng-controller="getInformation">
+		<div class="panel panel-default">
+
+			<div class="row">
+			
+			<div class="col-lg-8">
+				<div class="panel-heading">
+					<i class="fa fa-bar-chart-o fa-fw"></i> 
+					Merchandise Detail
+					
+				</div>
+				<!-- /.panel-heading -->
+				<div class="panel-body">
+					<table>
+						<tbody>
+							<tr ng-repeat="x in names">
+								<td><img 
+									src="./pic/{{ x.pic }}" 
+									width="150" 
+									height="150"
+									alt="Picture Information" /></td>
+								<td>
+								<div>{{ x.name }} </div>
+								<div>{{ x.account }}</div>
+								<div>{{ x.describe }}</div>
+								<div>{{ x.date }}</div>
+								<div>{{ x.days }}</div>
+								<div>{{ x.money }}</div>
+								<div>{{ x.bclass }}</div>
+								<div>{{ x.sclass }}</div>
+								</td>
+								
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<!-- /.panel-body -->
+			</div>
+			
+			<div class="col-lg-4">
+				<a href=""
+					class="btn btn-lg btn-info" ng-click="lookMoreInfo()"> <span
+						class="glyphicon glyphicon-heart"></span> 
+						<h2>Get It Now</h2>
+				</a>
+			</div>	
+			
+			</div>
+
+		</div>
+	</div>
+
+	<script>
+		'use strict';
+		/*
+		 var onePiece = angular.module('OnePiece', ['ngRoute'], function($routeProvider){
+		 $routeProvider.when('/hello/:message', {
+		 templateUrl: 'hello.html',
+		 controller: 'GreetingCtrl'
+		 }).otherwise({
+		 redirectTo: '/'
+		 });
+		 });
+
+		 onePiece.controller('GreetingCtrl', function($scope, $routeParams){
+		 $scope.greeting = $routeParams.message;
+		 console.log($scope.greeting);
+		 })*/
+
+		/*angular.module('myApp', [
+		 'ngRoute'
+		 ])
+		 .
+		 config(['$routeProvider', function($routeProvider) {
+		 $routeProvider.otherwise({redirectTo: '/view1'});
+		 $routeProvider.when('/app/:appid', {controller:'AppCtrl'});
+		 }]);
+
+		 //use
+		 function AppCtrl($routeParams) {
+		 var appid = $routeParams.appid;
+		 console.log('Test: '+appid);
+		 }*/
+
+		function getInformation($scope, $http) {
+			$.extend({
+				getUrlVars : function() {
+					var vars = [], hash;
+					var hashes = window.location.href.slice(
+							window.location.href.indexOf('?') + 1).split('&');
+					for (var i = 0; i < hashes.length; i++) {
+						hash = hashes[i].split('=');
+						vars.push(hash[0]);
+						vars[hash[0]] = hash[1];
+					}
+					return vars;
+				},
+				getUrlVar : function(name) {
+					return $.getUrlVars()[name];
+				}
+			});
+
+			var id = $.getUrlVar('id');
+			//var usr_id = $.getUrlVar('usr_id');
+			var usr_id = localStorage.getItem('usr_id');
+			
+			$http.get(
+					"http://140.118.109.39:8080/jsp/ItemSearchServlet?id="
+							+ id).success(function(response) {
+					$scope.names = response;
+					});
+			
+			$scope.lookMoreInfo = function() {
+				$http.get("http://140.118.109.39:8080/jsp/ItemGetIt?goodsID="
+						+ id + "&usr_id=" + usr_id).success(function(response) {
+							document.location.href="goods-record.jsp";
+						//$scope.names = response;
+						});	
+			}
+		}
+	</script>
+</body>
+</html>
